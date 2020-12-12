@@ -8,7 +8,11 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    children: [
+      { path: 'TablaEnfermeras', alias: '/', component: () => import('../components/TablaEnfermeras.vue') },
+      { path: 'AgregarEnfermera', component: () => import('../components/AgregarEnfermera.vue') }
+    ]
   },
   {
     path: '/about',
