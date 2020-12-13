@@ -73,15 +73,23 @@
                                     <v-col>
                                         <v-text-field v-model="datosPersonales.tipo_enfermera" label="Tipo de Enfermera"></v-text-field>
                                     </v-col>
+                                    <v-col>                                        
+                                        <v-select v-model="datosPersonales.jornada" :items="tipoJornada" label="Jornada"></v-select>
+                                    </v-col>
+                                    <v-col>                                        
+                                        <v-select @change="formato_descansos" v-model="datosPersonales.horario_labores" :items="tipoHorario" label="Horario Laboral"></v-select>
+                                    </v-col>
+                                    <v-col>                                        
+                                        <v-select v-model="datosPersonales.descanso" :items="tipoDescanso" label="Horario Laboral"></v-select>                                        
+                                    </v-col>
+                                </v-row>
+                                <v-row>
                                     <v-col>
-                                        <v-text-field v-model="datosPersonales.jornada" label="Jornada"></v-text-field>
+                                        <v-text-field v-model="datosPersonales.curp" label="CURP"></v-text-field>
                                     </v-col>
                                     <v-col>
-                                        <v-text-field v-model="datosPersonales.horario_labores" label="Horario Laboral"></v-text-field>
-                                    </v-col>
-                                    <v-col>
-                                        <v-text-field v-model="datosPersonales.descanso" label="Descanso"></v-text-field>
-                                    </v-col>
+                                        <v-text-field v-model="datosPersonales.telefono" label="Telefono"></v-text-field>
+                                    </v-col>                                  
                                 </v-row>
                             <v-divider></v-divider>
                             </v-card-text>
@@ -105,33 +113,21 @@
                                             <v-col cols="5">
                                                 <v-text-field v-model="datosAcademicos.nivel_estudios" label="Nivel de Estudio"></v-text-field>
                                             </v-col>
-                                            <v-col>
-                                                <v-text-field v-model="datosAcademicos.titulo" label="Titulo"></v-text-field>
-                                            </v-col>
+                                            <v-col>                                                
+                                                <v-select v-model="datosAcademicos.titulo" :items="tipoTitulo" label="Titulo"></v-select>
+                                            </v-col>                                           
                                         </v-row>
                                         <v-row>
-                                            <v-col>
+                                            <v-col cols="8">
                                                 <v-text-field v-model="datosAcademicos.institucion" label="Institucion"></v-text-field>
                                             </v-col>
-                                        </v-row>
-                                        <v-row>   
-                                            <v-col cols="2">                                                
-                                                <h3 class="mt-6 ml-5">De:</h3>  
+                                            <v-col>
+                                                <v-select v-model="datosAcademicos.tipo_escuela" :items="tipoEscuela" label="Tipo Escuela"></v-select>
                                             </v-col>
-                                            <v-col cols="4">                  
-                                                <v-text-field v-model="datosAcademicos.año_inicio" label="Año"></v-text-field>                                                
-                                            </v-col>
-                                            <v-col cols="2">                                                
-                                                <h3 class="mt-6 ml-4">Hasta:</h3>   
-                                            </v-col>
-                                            <v-col cols="4">   
-                                                <v-text-field v-model="datosAcademicos.año_fin" label="Año"></v-text-field>                                                
-                                            </v-col>                                                                                                                                             
-                                        </v-row>
+                                        </v-row>                                
                                         <v-row class="d-flex justify-end ">
                                             <v-btn text>Cancel</v-btn>
-                                            <v-btn color="primary" @click="agregar_dato_academico(datosAcademicos)">Continue</v-btn>
-                                        
+                                            <v-btn color="primary" @click="agregar_dato_academico(datosAcademicos)">Continue</v-btn>                                        
                                         </v-row>
                                     </v-col>
                                     <v-col cols="6">
@@ -292,7 +288,18 @@ export default {
         datosVivienda: {},
         datosFamiliares: {},
         listaAcademica: [],
-        listaFamiliares: []       
+        listaFamiliares: [],
+        //Catalogos
+        tipoEscuela: ['Publica', 'Privada'],
+        tipoTitulo: ['Diploma', 'Constancia'],
+        tipoJornada: ['8hrs', '12hrs'],
+        tipoHorario: [
+            {value: 'Matutino', text: 'Matutino 07:00 - 15:00'},
+            {value: 'Vespertino', text: 'Vespertino 14:00 - 21:30'},
+            {value: 'Nocturno', text: 'Nocturno 20:30 - 08:10'},
+        ],
+        tipoDescanso: [],        
+        
     }),
 // +----------------------------------------------------------+
 // |                        METODOS                           |
@@ -315,6 +322,13 @@ export default {
         agregar_dato_familia(_nuevo_familiar){
             this.listaFamiliares.push({ ..._nuevo_familiar });
             this.datosFamiliares = {}
+        },
+        formato_descansos(){
+            if(this.datosPersonales.horario_labores === 'Nocturno'){
+                this.tipoDescanso = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'] 
+            } else{
+                this.tipoDescanso = ['Domingo-Lunes', 'Lunes-Martes', 'Martes-Miercoles', 'Miercoles-Jueves', 'Jueves-Viernes', 'Viernes-Sabado']
+            }
         }
 
     },
