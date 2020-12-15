@@ -50,7 +50,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red" text @click="dialogDelete = false">No</v-btn>
-          <v-btn color="green" text @click="delete_enfermera({},true)">Si</v-btn>
+          <v-btn color="green" text @click="delete_enfermera(enfemeraDelete,true)">Si</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -182,7 +182,7 @@ export default {
   methods: {
     actualizar_tabla_enfermeras() {
       axios
-      .get(`${API}/mariadb`)
+      .get(`${API}/enfermera`)
       .then((response) => {
         if (response.status === 200) {          
           this.enfermeras = response.data;
@@ -190,10 +190,12 @@ export default {
       }).catch((err) => console.error(err)); 
     },     
     delete_enfermera(_enfermera, _delete) {
-      if(_delete){        
+      if(_delete){      
+        console.log(_enfermera.matricula)  
         axios
-        .delete(`${API}/mariadb/${_enfermera.matricula}`)
+        .delete(`${API}/enfermera/${_enfermera.matricula}`)
         .then((response) => {
+          console.log(response)
           if(response.status === 200) {  
             this.actualizar_tabla_enfermeras()
             this.dialogDelete = false
@@ -208,7 +210,7 @@ export default {
       if(_edit) {
         console.log('editar')
         axios
-        .put(`${API}/mariadb/${_matriculaEdit}`,_enfermera)
+        .put(`${API}/enfermera/${_matriculaEdit}`,_enfermera)
         .then((response) => {
           if(response.status === 200) {  
             this.actualizar_tabla_enfermeras()

@@ -34,7 +34,7 @@ const ENUM_ROURTER = Object.freeze({
 export default {
   name: "Home",
   data: () => ({
-    subVistaSelect: true,        
+    subVistaSelect: true,           
     
   }),
 
@@ -42,7 +42,7 @@ export default {
 // |                    CICLOS DE VIDA                        |
 // +----------------------------------------------------------+
   beforeMount() {
-    
+  
   },
 // +----------------------------------------------------------+
 // |                        METODOS                           |

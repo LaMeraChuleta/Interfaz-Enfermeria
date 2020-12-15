@@ -70,8 +70,8 @@
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col>
-                                        <v-text-field v-model="datosPersonales.tipo_enfermera" label="Tipo de Enfermera"></v-text-field>
+                                    <v-col>                                        
+                                        <v-select v-model="datosPersonales.tipo_enfermera" item-text="descripcion" item-value="id" :items="tipoEnfermera" label="Tipo de Enfermera"></v-select>
                                     </v-col>
                                     <v-col>                                        
                                         <v-select v-model="datosPersonales.jornada" :items="tipoJornada" label="Jornada"></v-select>
@@ -80,7 +80,7 @@
                                         <v-select @change="formato_descansos" v-model="datosPersonales.horario_labores" :items="tipoHorario" label="Horario Laboral"></v-select>
                                     </v-col>
                                     <v-col>                                        
-                                        <v-select v-model="datosPersonales.descanso" :items="tipoDescanso" label="Horario Laboral"></v-select>                                        
+                                        <v-select v-model="datosPersonales.descanso" :items="tipoDescanso" label="Descanso"></v-select>                                        
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -95,7 +95,7 @@
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
                                 <v-btn text>Cancel</v-btn>
-                                <v-btn color="primary" @click="e1 = 2">Continue</v-btn>
+                                <v-btn color="primary" @click="agregar_enfermera(datosPersonales, 1)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-stepper-content>
@@ -111,7 +111,7 @@
                                     <v-col>                                        
                                         <v-row class="">
                                             <v-col cols="5">
-                                                <v-text-field v-model="datosAcademicos.nivel_estudios" label="Nivel de Estudio"></v-text-field>
+                                                <v-text-field v-model="datosAcademicos.nivel" label="Nivel de Estudio"></v-text-field>
                                             </v-col>
                                             <v-col>                                                
                                                 <v-select v-model="datosAcademicos.titulo" :items="tipoTitulo" label="Titulo"></v-select>
@@ -142,7 +142,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr v-for="item in listaAcademica" :key="item.name">
-                                                    <td>{{ item.nivel_estudios }}</td>
+                                                    <td>{{ item.nivel }}</td>
                                                     <td>{{ item.titulo }}</td>
                                                     <td>                                                        
                                                         <v-icon small class="mr-4">mdi-pencil</v-icon>                                                        
@@ -158,7 +158,7 @@
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
                                 <v-btn @click="e1 = 1" text>Cancel</v-btn>
-                                <v-btn color="primary" @click="e1 = 3">Continue</v-btn>
+                                <v-btn color="primary" @click="agregar_enfermera(listaAcademica, 2)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>                        
                     </v-stepper-content>
@@ -189,17 +189,17 @@
                                         <v-text-field v-model="datosVivienda.cp" label="C.P"></v-text-field>
                                     </v-col>
                                     <v-col>
-                                        <v-text-field v-model="datosVivienda.num_ext" label="Numero Ext"></v-text-field>
+                                        <v-text-field v-model.number="datosVivienda.num_ext" label="Numero Ext"></v-text-field>
                                     </v-col>
                                     <v-col>
-                                        <v-text-field v-model="datosVivienda.num_int" label="Numero Int"></v-text-field>
+                                        <v-text-field v-model.number="datosVivienda.num_int" label="Numero Int"></v-text-field>
                                     </v-col>
                                 </v-row>
                             <v-divider></v-divider>
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
                                 <v-btn @click="e1 = 2" text>Cancel</v-btn>
-                                <v-btn color="primary" @click="e1 = 4">Continue</v-btn>
+                                <v-btn color="primary" @click="agregar_enfermera(datosVivienda, 3)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>        
                     </v-stepper-content>
@@ -215,7 +215,7 @@
                                     <v-col>                                        
                                         <v-row>
                                             <v-col>
-                                                <v-text-field v-model="datosFamiliares.nombre" label="Nombre(s)"></v-text-field>
+                                                <v-text-field v-model="datosFamiliares.nombres" label="Nombre(s)"></v-text-field>
                                             </v-col>
                                             <v-col>
                                                 <v-text-field v-model="datosFamiliares.apellido_m" label="Apellido Materno"></v-text-field>
@@ -229,7 +229,7 @@
                                                 <v-text-field v-model="datosFamiliares.parentesco" label="Parentesco"></v-text-field>                                                
                                             </v-col>                                            
                                             <v-col>                                                                                                    
-                                                <v-text-field v-model="datosFamiliares.edad" label="Edad"></v-text-field>                                                
+                                                <v-text-field v-model.number="datosFamiliares.edad" label="Edad"></v-text-field>                                                
                                             </v-col>                                                                                                                                             
                                         </v-row>
                                         <v-row class="d-flex justify-end mt-10">
@@ -250,7 +250,7 @@
                                                 </thead>
                                                 <tbody>
                                                 <tr v-for="(item, key) in listaFamiliares" :key="key">
-                                                    <td>{{ `${item.nombre} ${item.apellido_m} ${item.apellido_p}` }}</td>
+                                                    <td>{{ `${item.nombres} ${item.apellido_m} ${item.apellido_p}` }}</td>
                                                     <td>{{ item.parentesco }}</td>
                                                     <td>
                                                         <v-icon small class="mr-4">mdi-pencil</v-icon>
@@ -266,18 +266,32 @@
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
                                 <v-btn @click="e1 = 3" text>Cancel</v-btn>
-                                <v-btn color="primary">Continue</v-btn>
+                                <v-btn color="primary" @click="agregar_enfermera(listaFamiliares, 4)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>
                         
                     </v-stepper-content>
                 </v-stepper-items>
             </v-stepper>
+            <div class="text-center">
+                <v-snackbar color="red darken-2" v-model="errorModal" timeout="2000" :vertical="true">
+                    {{ error  }}
+                    <template v-slot:action="{ attrs }">
+                        <v-btn color="grey lighten-2" text v-bind="attrs" @click="errorModal = false">Cerrar</v-btn>
+                    </template>
+                </v-snackbar>
+            </div>
         </v-container>
     </div>
 </template>
 <script>
 import axios from "axios";
+const STEP_NUEVA_ENFERMERA = Object.freeze({
+    datosPresonales: 1,
+    datosAcademicos: 2,
+    datosVivienda: 3,
+    datosFamiliares: 4
+})
 const API = "http://localhost:8089";
 export default {
     name: "AgregarEnfermera",
@@ -298,22 +312,91 @@ export default {
             {value: 'Vespertino', text: 'Vespertino 14:00 - 21:30'},
             {value: 'Nocturno', text: 'Nocturno 20:30 - 08:10'},
         ],
-        tipoDescanso: [],        
+        tipoDescanso: [],
+        tipoEnfermera: [], 
+        errorModal: false,
+        error: ''
+        
         
     }),
+// +----------------------------------------------------------+
+// |                     CICLOS DE VIDA                       |
+// +----------------------------------------------------------+
+    beforeMount(){
+        axios
+            .get(`${API}/catalogo/tipoEnfermera`)
+            .then((response) => {
+                if (response.status === 200) {
+                    this.tipoEnfermera = response.data
+                }
+            })
+        .catch((err) => console.error(err));
+    },
 // +----------------------------------------------------------+
 // |                        METODOS                           |
 // +----------------------------------------------------------+
     methods: {       
-        agregar_enfermera(_enfermera) {
-            axios
-            .post(`${API}/mariadb`, _enfermera)
-            .then((response) => {
-                if (response.status === 200) {
-                    this.$router.push('/TablaEnfermeras')
-                }
-            })
-            .catch((err) => console.error(err));
+        agregar_enfermera(_new_info, _step) {
+            
+            let url = ''
+            switch(_step){
+                case STEP_NUEVA_ENFERMERA.datosPresonales:
+                    url = 'enfermera'
+                    break;
+                case STEP_NUEVA_ENFERMERA.datosAcademicos:
+                    url = 'estudios'                                        
+                    break
+                case STEP_NUEVA_ENFERMERA.datosVivienda:
+                    _new_info["id_enfermera"] = this.datosPersonales.matricula
+                    url = 'vivienda'
+                    break;
+                case STEP_NUEVA_ENFERMERA.datosFamiliares:                    
+                    url = 'familia'
+                    break;
+                default:
+                    alert('error')
+                    break;
+            }            
+            //Si es true Itera las Lista de Estudios o de Familia
+            if(_step % 2 === 0){
+                for(let item of _new_info){
+                    //Se agregar los id´s de la enfermera
+                    item["id_enfermera"] = this.datosPersonales.matricula
+                    if(_step === 2)
+                        item["id_estudio"] = 0
+                    if(_step === 4)
+                        item["id_familia"] = 0                                     
+                    axios
+                        .post(`${API}/${url}`, item)
+                        .then((response) => {                
+                            if (response.status === 200) {
+                                console.log(response)
+                                this.e1 = _step + 1
+                                if(_step === 4){
+                                    this.$router.push('/TablaEnfermeras')
+                                }
+                            }
+                        })
+                    .catch((err) => console.error(err)); 
+                } 
+            //Manda el objeto directo sin iterar
+            } else {                
+                axios
+                    .post(`${API}/${url}`, _new_info)
+                    .then((response) => {                
+                        if (response.status === 200) {
+                            console.log(response)
+                            this.e1 = _step + 1
+                            if(_step === 4){
+                                this.$router.push('/TablaEnfermeras')
+                            }
+                        }
+                    })
+                .catch((err) => {
+                    this.errorModal = true
+                    this.error = err
+                });  
+            }                   
         },  
         agregar_dato_academico(_nuevo_estudio){
             this.listaAcademica.push({ ..._nuevo_estudio });
