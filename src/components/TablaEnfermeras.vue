@@ -139,7 +139,7 @@
 
 <script>
 import axios from "axios";
-const API = "http://localhost:8089";
+const API = "http://localhost:4000";
 export default {
   name: "TablaEnfermeras",
   data: () => ({

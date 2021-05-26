@@ -94,7 +94,7 @@
                             <v-divider></v-divider>
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
-                                <v-btn text>Cancel</v-btn>
+                                <!-- <v-btn text>Cancel</v-btn> -->
                                 <v-btn color="primary" @click="agregar_enfermera(datosPersonales, 1)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>
@@ -157,7 +157,7 @@
                             <v-divider></v-divider>
                             </v-card-text>
                             <v-card-actions class="d-flex justify-end">
-                                <v-btn @click="e1 = 1" text>Cancel</v-btn>
+                                <!-- <v-btn @click="e1 = 1" text>Cancel</v-btn> -->
                                 <v-btn color="primary" @click="agregar_enfermera(listaAcademica, 2)">Continue</v-btn>
                             </v-card-actions>
                         </v-card>                        
@@ -268,14 +268,19 @@
                                 <v-btn @click="e1 = 3" text>Cancel</v-btn>
                                 <v-btn color="primary" @click="agregar_enfermera(listaFamiliares, 4)">Continue</v-btn>
                             </v-card-actions>
-                        </v-card>
-                        
+                        </v-card>                        
                     </v-stepper-content>
                 </v-stepper-items>
             </v-stepper>
             <div class="text-center">
                 <v-snackbar color="red darken-2" v-model="errorModal" timeout="2000" :vertical="true">
                     {{ error  }}
+                    <template v-slot:action="{ attrs }">
+                        <v-btn color="grey lighten-2" text v-bind="attrs" @click="errorModal = false">Cerrar</v-btn>
+                    </template>
+                </v-snackbar>
+                <v-snackbar color="greend darken-2" v-model="insertModal" timeout="2000" :vertical="true">
+                    {{ mensaje  }}
                     <template v-slot:action="{ attrs }">
                         <v-btn color="grey lighten-2" text v-bind="attrs" @click="errorModal = false">Cerrar</v-btn>
                     </template>
@@ -289,10 +294,11 @@ import axios from "axios";
 const STEP_NUEVA_ENFERMERA = Object.freeze({
     datosPresonales: 1,
     datosAcademicos: 2,
-    datosVivienda: 3,
+    datosVivienda:   3,
     datosFamiliares: 4
+    
 })
-const API = "http://localhost:8089";
+const API = "http://localhost:4000";
 export default {
     name: "AgregarEnfermera",
     data: () => ({
@@ -315,9 +321,8 @@ export default {
         tipoDescanso: [],
         tipoEnfermera: [], 
         errorModal: false,
-        error: ''
-        
-        
+        insertModal: false,
+        error: ''                
     }),
 // +----------------------------------------------------------+
 // |                     CICLOS DE VIDA                       |
@@ -336,8 +341,7 @@ export default {
 // |                        METODOS                           |
 // +----------------------------------------------------------+
     methods: {       
-        agregar_enfermera(_new_info, _step) {
-            
+        agregar_enfermera(_new_info, _step) {            
             let url = ''
             switch(_step){
                 case STEP_NUEVA_ENFERMERA.datosPresonales:
@@ -373,11 +377,16 @@ export default {
                                 console.log(response)
                                 this.e1 = _step + 1
                                 if(_step === 4){
-                                    this.$router.push('/TablaEnfermeras')
+                                    this.mensaje = `Se inserto correcatamente a la enfermera ${this.datosPersonales.nombres} ${this.datosPersonales.apellido_m} ${this.datosPersonales.apellido_p} con la matricula ${this.datosPersonales.matricula}`
+                                    this.insertModal = true     
+                                    this.limpiar_insercion()                                    
                                 }
                             }
                         })
-                    .catch((err) => console.error(err)); 
+                        .catch((err) => {
+                        this.errorModal = true
+                        this.error = err
+                    }); 
                 } 
             //Manda el objeto directo sin iterar
             } else {                
@@ -392,7 +401,7 @@ export default {
                             }
                         }
                     })
-                .catch((err) => {
+                    .catch((err) => {
                     this.errorModal = true
                     this.error = err
                 });  
@@ -412,8 +421,16 @@ export default {
             } else{
                 this.tipoDescanso = ['Domingo-Lunes', 'Lunes-Martes', 'Martes-Miercoles', 'Miercoles-Jueves', 'Jueves-Viernes', 'Viernes-Sabado']
             }
+        },
+        limpiar_insercion(){
+            this.datosPersonales = {}
+            this.datosAcademicos = {}
+            this.datosVivienda = {}
+            this.datosFamiliares = {}
+            this.listaAcademica = []
+            this.listaFamiliares = []
+            this.e1 = 1
         }
-
     },
 };
 </script>
